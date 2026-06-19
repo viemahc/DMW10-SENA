@@ -1,0 +1,250 @@
+.detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #0035aa 0%, #0052cc 100%);
+  padding: 25px;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 53, 170, 0.15);
+}
+
+.detail-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.sead-number {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sead-number strong {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-back {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-back:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-2px);
+}
+
+.detail-header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-edit {
+  background-color: rgba(76, 175, 80, 0.9);
+  color: white;
+  border: 2px solid rgba(76, 175, 80, 1);
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-edit:hover {
+  background-color: rgba(56, 155, 60, 1);
+  transform: scale(1.05);
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.detail-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 5px solid #0035aa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.detail-section h2 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  color: #0035aa;
+  font-weight: 600;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.detail-item p {
+  margin: 0;
+  font-size: 15px;
+  color: #333;
+  word-break: break-word;
+  line-height: 1.6;
+}
+
+.status-badge {
+  display: inline-block;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.emails-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.email-item {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #0035aa;
+  word-break: break-all;
+  border-left: 3px solid #0035aa;
+}
+
+.appointments-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.appointment-item {
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #0035aa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.apt-date {
+  font-weight: 600;
+  color: #0035aa;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.apt-time {
+  color: #666;
+  font-size: 13px;
+}
+
+.loading,
+.error-message,
+.no-record {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+  color: #666;
+}
+
+.error-message {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.no-record {
+  background: #e7e7e7;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  padding: 20px;
+  color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .detail-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .detail-header h1 {
+    font-size: 22px;
+  }
+
+  .detail-header-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .btn-back,
+  .btn-edit {
+    width: 100%;
+    text-align: center;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-section {
+    padding: 15px;
+  }
+
+  .appointments-list {
+    grid-template-columns: 1fr;
+  }
+}

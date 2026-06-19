@@ -2,8 +2,8 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import serializers
-from .models import SenaRecord
-from .serializers import SenaRecordSerializer
+from .models import SenaRecord, EmailClient, EmailRespondent, SenaMinutes, SenaAppointment, AgencyRecord
+from .serializers import SenaRecordSerializer, EmailClientSerializer, EmailRespondentSerializer, SenaMinutesSerializer, SenaAppointmentSerializer, AgencyRecordSerializer
 from authentication.models import User, UserRole, Role
 
 
@@ -42,17 +42,15 @@ class SenaRecordViewSet(viewsets.ModelViewSet):
                     # Admins can view any user's records
                     return SenaRecord.objects.filter(user_id=requested_user_id)
                 else:
-                    # Non-admins can only view their own records
+                    # Non-admins can only view their own records when specifically requested
                     if int(requested_user_id) == current_user.user_id:
                         return SenaRecord.objects.filter(user_id=requested_user_id)
                     else:
                         return SenaRecord.objects.none()
             else:
-                # No user_id specified, use default behavior
-                if is_admin:
-                    return SenaRecord.objects.all()
-                else:
-                    return SenaRecord.objects.filter(user=current_user)
+                # No user_id specified - return all records for authenticated users
+                # This allows all users to see team statistics in the dashboard
+                return SenaRecord.objects.all()
         except PermissionError:
             return SenaRecord.objects.none()
 
@@ -102,12 +100,12 @@ class SenaRecordViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def by_status(self, request):
-        """Filter SENA records by status"""
+        """Filter SENA records by client status"""
         try:
             self.check_authentication()
             status_filter = request.query_params.get('status', None)
             if status_filter:
-                records = self.get_queryset().filter(senaStatus=status_filter)
+                records = self.get_queryset().filter(clientStatus=status_filter)
                 serializer = self.get_serializer(records, many=True)
                 return Response(serializer.data)
             return Response(
@@ -119,3 +117,144 @@ class SenaRecordViewSet(viewsets.ModelViewSet):
                 {'error': str(e)},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+
+    @action(detail=False, methods=['get'])
+    def agencies(self, request):
+        """Get list of unique agencies for dropdown selection"""
+        try:
+            self.check_authentication()
+            # Get unique agencies with their most recent contact info
+            agencies = AgencyRecord.objects.values('agencyName', 'agencyDescription', 'contact_number').distinct().order_by('agencyName')
+            return Response(agencies)
+        except PermissionError as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class EmailClientViewSet(viewsets.ModelViewSet):
+    queryset = EmailClient.objects.all()
+    serializer_class = EmailClientSerializer
+
+    def check_authentication(self):
+        """Check if user is authenticated via session"""
+        user_id = self.request.session.get('user_id')
+        if not user_id:
+            raise PermissionError('Authentication credentials were not provided')
+        try:
+            user = User.objects.get(user_id=user_id)
+            return user
+        except User.DoesNotExist:
+            raise PermissionError('User not found')
+
+    def list(self, request, *args, **kwargs):
+        try:
+            self.check_authentication()
+            return super().list(request, *args, **kwargs)
+        except PermissionError as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class EmailRespondentViewSet(viewsets.ModelViewSet):
+    queryset = EmailRespondent.objects.all()
+    serializer_class = EmailRespondentSerializer
+
+    def check_authentication(self):
+        """Check if user is authenticated via session"""
+        user_id = self.request.session.get('user_id')
+        if not user_id:
+            raise PermissionError('Authentication credentials were not provided')
+        try:
+            user = User.objects.get(user_id=user_id)
+            return user
+        except User.DoesNotExist:
+            raise PermissionError('User not found')
+
+    def list(self, request, *args, **kwargs):
+        try:
+            self.check_authentication()
+            return super().list(request, *args, **kwargs)
+        except PermissionError as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class SenaMinutesViewSet(viewsets.ModelViewSet):
+    queryset = SenaMinutes.objects.all()
+    serializer_class = SenaMinutesSerializer
+
+    def check_authentication(self):
+        """Check if user is authenticated via session"""
+        user_id = self.request.session.get('user_id')
+        if not user_id:
+            raise PermissionError('Authentication credentials were not provided')
+        try:
+            user = User.objects.get(user_id=user_id)
+            return user
+        except User.DoesNotExist:
+            raise PermissionError('User not found')
+
+    def list(self, request, *args, **kwargs):
+        try:
+            self.check_authentication()
+            return super().list(request, *args, **kwargs)
+        except PermissionError as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class SenaAppointmentViewSet(viewsets.ModelViewSet):
+    queryset = SenaAppointment.objects.all()
+    serializer_class = SenaAppointmentSerializer
+
+    def check_authentication(self):
+        """Check if user is authenticated via session"""
+        user_id = self.request.session.get('user_id')
+        if not user_id:
+            raise PermissionError('Authentication credentials were not provided')
+        try:
+            user = User.objects.get(user_id=user_id)
+            return user
+        except User.DoesNotExist:
+            raise PermissionError('User not found')
+
+    def list(self, request, *args, **kwargs):
+        try:
+            self.check_authentication()
+            return super().list(request, *args, **kwargs)
+        except PermissionError as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class AgencyRecordViewSet(viewsets.ModelViewSet):
+    queryset = AgencyRecord.objects.all()
+    serializer_class = AgencyRecordSerializer
+
+    def check_authentication(self):
+        """Check if user is authenticated via session"""
+        user_id = self.request.session.get('user_id')
+        if not user_id:
+            raise PermissionError('Authentication credentials were not provided')
+        try:
+            user = User.objects.get(user_id=user_id)
+            return user
+        except User.DoesNotExist:
+            raise PermissionError('User not found')
+
+    def get_queryset(self):
+        try:
+            self.check_authentication()
+            return AgencyRecord.objects.all()
+        except PermissionError:
+            return AgencyRecord.objects.none()

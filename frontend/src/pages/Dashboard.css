@@ -134,3 +134,129 @@
     grid-template-columns: 1fr;
   }
 }
+
+.user-statistics-section {
+  margin-top: 40px;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-statistics-section h2 {
+  color: #0035aa;
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 24px;
+  border-bottom: 3px solid #0035aa;
+  padding-bottom: 15px;
+}
+
+.user-statistics-section p {
+  color: #666;
+  text-align: center;
+  padding: 20px;
+}
+
+.user-stats-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.user-stat-card {
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.user-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 35, 170, 0.15);
+  border-color: #0035aa;
+}
+
+.user-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.user-stat-header h3 {
+  margin: 0;
+  color: #0035aa;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.total-appointments {
+  background: #0035aa;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #0035aa;
+}
+
+.status-name {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.status-count {
+  background: #f0f0f0;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #0035aa;
+  font-size: 13px;
+}
+
+@media (max-width: 1024px) {
+  .user-stats-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .user-statistics-section {
+    padding: 20px;
+  }
+
+  .user-stats-list {
+    grid-template-columns: 1fr;
+  }
+
+  .user-stat-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .total-appointments {
+    align-self: flex-end;
+  }
+}

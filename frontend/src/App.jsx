@@ -10,6 +10,9 @@ import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import UserManagement from './pages/UserManagement'
 import SenaRecords from './pages/SenaRecords'
+import SenaRecordsList from './pages/SenaRecordsList'
+import SenaRecordDetail from './pages/SenaRecordDetail'
+import AgencySummary from './pages/AgencySummary'
 import SenaRecordForm from './pages/SenaRecordForm'
 import './App.css'
 
@@ -101,6 +104,30 @@ function AppContent() {
         element={
           <ProtectedRoute>
             <SenaRecords />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sena-records-list"
+        element={
+          <ProtectedRoute>
+            <SenaRecordsList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sena-records-detail/:id"
+        element={
+          <ProtectedRoute>
+            <SenaRecordDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/agency-summary"
+        element={
+          <ProtectedRoute>
+            <AgencySummary />
           </ProtectedRoute>
         }
       />

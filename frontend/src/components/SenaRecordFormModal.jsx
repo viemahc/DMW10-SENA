@@ -10,22 +10,50 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
   const [formData, setFormData] = useState({
     user: '',
     senaTitle: '',
+    seadNumber: '',
+    senaPurpose: '',
     clientFirstName: '',
     clientMiddleName: '',
     clientLastName: '',
     clientSuffix: '',
     clientAge: '',
     clientContactNumber: '',
-    clientEmail: '',
-    dateOfAppointment: '',
-    start_time: '',
-    end_time: '',
-    senaStatus: 'scheduled',
+    clientGender: '',
+    clientBase: '',
+    clientDeployed: '',
+    clientIndigency: false,
+    clientParent: false,
+    clientPWD: false,
+    minute: '',
+    clientStatus: 'scheduled',
+    respondentStatus: 'scheduled',
+    settledDate: '',
+    agencyName: '',
+    agencyDescription: '',
+    agencyContactNumber: '',
   });
 
   const [users, setUsers] = useState([]);
+  const [emailClients, setEmailClients] = useState([]);
+  const [emailRespondents, setEmailRespondents] = useState([]);
+  const [minutes, setMinutes] = useState([]);
+  const [agencies, setAgencies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [clientEmails, setClientEmails] = useState(['']);
+  const [respondentEmails, setRespondentEmails] = useState(['']);
+  const [newClientEmail, setNewClientEmail] = useState('');
+  const [newRespondentEmail, setNewRespondentEmail] = useState('');
+  const [appointments, setAppointments] = useState([{
+    dateOfAppointment: '',
+    startTime: '',
+    endTime: '',
+  }]);
+  const [newAppointment, setNewAppointment] = useState({
+    dateOfAppointment: '',
+    startTime: '',
+    endTime: '',
+  });
 
   // Fetch users list
   useEffect(() => {
@@ -40,7 +68,60 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
         console.error('Error fetching users:', err);
       }
     };
+
+    const fetchEmailClients = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/sena/email-clients/', {
+          withCredentials: true,
+        });
+        const clientsList = response.data.results || response.data || [];
+        setEmailClients(Array.isArray(clientsList) ? clientsList : []);
+      } catch (err) {
+        console.error('Error fetching email clients:', err);
+      }
+    };
+
+    const fetchEmailRespondents = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/sena/email-respondents/', {
+          withCredentials: true,
+        });
+        const respondentsList = response.data.results || response.data || [];
+        setEmailRespondents(Array.isArray(respondentsList) ? respondentsList : []);
+      } catch (err) {
+        console.error('Error fetching email respondents:', err);
+      }
+    };
+
+    const fetchMinutes = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/sena/minutes/', {
+          withCredentials: true,
+        });
+        const minutesList = response.data.results || response.data || [];
+        setMinutes(Array.isArray(minutesList) ? minutesList : []);
+      } catch (err) {
+        console.error('Error fetching minutes:', err);
+      }
+    };
+
+    const fetchAgencies = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/sena/records/agencies/', {
+          withCredentials: true,
+        });
+        const agenciesList = response.data || [];
+        setAgencies(Array.isArray(agenciesList) ? agenciesList : []);
+      } catch (err) {
+        console.error('Error fetching agencies:', err);
+      }
+    };
+
     fetchUsers();
+    fetchEmailClients();
+    fetchEmailRespondents();
+    fetchMinutes();
+    fetchAgencies();
   }, []);
 
   // Set default user or fetch existing record for edit
@@ -55,24 +136,42 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
           );
           const record = response.data;
           
-          // Format date from ISO format to YYYY-MM-DD
-          const dateOnly = record.dateOfAppointment.split('T')[0];
-          
           setFormData({
             user: record.user,
             senaTitle: record.senaTitle,
+            seadNumber: record.seadNumber || '',
+            senaPurpose: record.senaPurpose || '',
             clientFirstName: record.clientFirstName,
             clientMiddleName: record.clientMiddleName || '',
             clientLastName: record.clientLastName,
             clientSuffix: record.clientSuffix || '',
             clientAge: record.clientAge,
             clientContactNumber: record.clientContactNumber,
-            clientEmail: record.clientEmail,
-            dateOfAppointment: dateOnly,
-            start_time: record.start_time || '',
-            end_time: record.end_time || '',
-            senaStatus: record.senaStatus,
+            clientGender: record.clientGender || '',
+            clientBase: record.clientBase || '',
+            clientDeployed: record.clientDeployed || '',
+            clientIndigency: record.clientIndigency || false,
+            clientParent: record.clientParent || false,
+            clientPWD: record.clientPWD || false,
+            minute: record.minute || '',
+            clientStatus: record.clientStatus || 'scheduled',
+            respondentStatus: record.respondentStatus || 'scheduled',
+            settledDate: record.settledDate || '',
+            agencyName: record.agency_records?.[0]?.agencyName || '',
+            agencyDescription: record.agency_records?.[0]?.agencyDescription || '',
+            agencyContactNumber: record.agency_records?.[0]?.contact_number || '',
           });
+
+          // Load all associated emails
+          setClientEmails(record.clientEmails || ['']);
+          setRespondentEmails(record.respondentEmails || ['']);
+          
+          // Load all associated appointments
+          setAppointments(record.appointments || [{
+            dateOfAppointment: '',
+            startTime: '',
+            endTime: '',
+          }]);
         } catch (err) {
           console.error('Error fetching record:', err);
           setError('Failed to load record');
@@ -85,75 +184,115 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
         ...prev,
         user: user.user_id,
       }));
+      setClientEmails(['']);
+      setRespondentEmails(['']);
     }
   }, [recordId, user, isEditing]);
 
+  // Auto-fill agency details when agencyName matches a loaded agency
+  useEffect(() => {
+    if (formData.agencyName && agencies.length > 0) {
+      const matchedAgency = agencies.find((agency) => agency.agencyName === formData.agencyName);
+      if (matchedAgency) {
+        // Auto-fill description and contact number if they exist
+        setFormData((prev) => ({
+          ...prev,
+          agencyDescription: matchedAgency.agencyDescription || '',
+          agencyContactNumber: matchedAgency.contact_number || '',
+        }));
+      }
+    }
+  }, [agencies, formData.agencyName]);
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
-  const checkTimeConflict = async () => {
-    if (!formData.start_time || !formData.end_time || !formData.dateOfAppointment) {
-      return true;
+  const handleAgencySelect = (e) => {
+    const selectedName = e.target.value;
+    
+    if (selectedName === '' || selectedName === 'new') {
+      // Clear all agency fields for new entry
+      setFormData((prev) => ({
+        ...prev,
+        agencyName: '',
+        agencyDescription: '',
+        agencyContactNumber: '',
+      }));
+      return;
     }
 
-    try {
-      const userId = formData.user ? parseInt(formData.user, 10) : null;
-      if (!userId) return true;
+    // Find the selected agency in the list
+    const selectedAgency = agencies.find((agency) => agency.agencyName === selectedName);
+    
+    if (selectedAgency) {
+      // Auto-fill the agency fields
+      setFormData((prev) => ({
+        ...prev,
+        agencyName: selectedAgency.agencyName,
+        agencyDescription: selectedAgency.agencyDescription || '',
+        agencyContactNumber: selectedAgency.contact_number || '',
+      }));
+    }
+  };
 
-      const response = await axios.get(
-        `http://localhost:8000/api/sena/records/?user_id=${userId}`,
-        { withCredentials: true }
-      );
+  const handleClientEmailChange = (index, value) => {
+    const newEmails = [...clientEmails];
+    newEmails[index] = value;
+    setClientEmails(newEmails);
+  };
 
-      const records = response.data.results || response.data || [];
-      const appointmentDate = formData.dateOfAppointment;
-      
-      const sameDay = records.filter((record) => {
-        const recordDate = record.dateOfAppointment.split('T')[0];
-        return recordDate === appointmentDate && record.senaStatus === 'scheduled';
+  const handleRespondentEmailChange = (index, value) => {
+    const newEmails = [...respondentEmails];
+    newEmails[index] = value;
+    setRespondentEmails(newEmails);
+  };
+
+  const addClientEmail = () => {
+    if (newClientEmail.trim()) {
+      setClientEmails([...clientEmails, newClientEmail.trim()]);
+      setNewClientEmail('');
+    }
+  };
+
+  const addRespondentEmail = () => {
+    if (newRespondentEmail.trim()) {
+      setRespondentEmails([...respondentEmails, newRespondentEmail.trim()]);
+      setNewRespondentEmail('');
+    }
+  };
+
+  const removeClientEmail = (index) => {
+    setClientEmails(clientEmails.filter((_, i) => i !== index));
+  };
+
+  const removeRespondentEmail = (index) => {
+    setRespondentEmails(respondentEmails.filter((_, i) => i !== index));
+  };
+
+  const handleAppointmentChange = (index, field, value) => {
+    const newAppointments = [...appointments];
+    newAppointments[index][field] = value;
+    setAppointments(newAppointments);
+  };
+
+  const addAppointment = () => {
+    if (newAppointment.dateOfAppointment.trim()) {
+      setAppointments([...appointments, { ...newAppointment }]);
+      setNewAppointment({
+        dateOfAppointment: '',
+        startTime: '',
+        endTime: '',
       });
-
-      const timeToMinutes = (timeStr) => {
-        if (!timeStr) return null;
-        const parts = timeStr.split(':');
-        return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-      };
-
-      const newEndMinutes = timeToMinutes(formData.end_time);
-      const newStartMinutes = timeToMinutes(formData.start_time);
-
-      for (const record of sameDay) {
-        if (isEditing && record.sena_id === recordId) {
-          continue;
-        }
-
-        const existingStart = record.start_time;
-        const existingEnd = record.end_time;
-
-        if (existingStart && existingEnd) {
-          const existingStartMinutes = timeToMinutes(existingStart);
-          const existingEndMinutes = timeToMinutes(existingEnd);
-
-          if (!(newEndMinutes <= existingStartMinutes || newStartMinutes >= existingEndMinutes)) {
-            setError(
-              `Time slot conflict: A scheduled appointment already exists for this user on ${appointmentDate} ` +
-              `from ${existingStart} to ${existingEnd}. Please select a different time slot.`
-            );
-            return false;
-          }
-        }
-      }
-
-      return true;
-    } catch (err) {
-      console.error('Error checking time conflict:', err);
-      return true;
     }
+  };
+
+  const removeAppointment = (index) => {
+    setAppointments(appointments.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -162,8 +301,25 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
     setError(null);
 
     try {
-      const noConflict = await checkTimeConflict();
-      if (!noConflict) {
+      // Validate at least one email for client and respondent
+      const validClientEmails = clientEmails.filter(e => e.trim());
+      const validRespondentEmails = respondentEmails.filter(e => e.trim());
+      const validAppointments = appointments.filter(a => a.dateOfAppointment.trim());
+
+      if (validClientEmails.length === 0) {
+        setError('At least one client email is required');
+        setLoading(false);
+        return;
+      }
+
+      if (validRespondentEmails.length === 0) {
+        setError('At least one respondent email is required');
+        setLoading(false);
+        return;
+      }
+
+      if (validAppointments.length === 0) {
+        setError('At least one appointment is required');
         setLoading(false);
         return;
       }
@@ -171,17 +327,30 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
       const payload = {
         user: formData.user ? parseInt(formData.user, 10) : null,
         senaTitle: formData.senaTitle,
+        seadNumber: formData.seadNumber || '',
+        senaPurpose: formData.senaPurpose || '',
         clientFirstName: formData.clientFirstName,
         clientMiddleName: formData.clientMiddleName,
         clientLastName: formData.clientLastName,
         clientSuffix: formData.clientSuffix,
         clientAge: parseInt(formData.clientAge, 10),
         clientContactNumber: formData.clientContactNumber,
-        clientEmail: formData.clientEmail,
-        dateOfAppointment: `${formData.dateOfAppointment}T00:00:00.000Z`,
-        start_time: formData.start_time || null,
-        end_time: formData.end_time || null,
-        senaStatus: formData.senaStatus,
+        clientGender: formData.clientGender || '',
+        clientBase: formData.clientBase || '',
+        clientDeployed: formData.clientDeployed || '',
+        clientIndigency: formData.clientIndigency,
+        clientParent: formData.clientParent,
+        clientPWD: formData.clientPWD,
+        clientEmailsInput: validClientEmails,
+        respondentEmailsInput: validRespondentEmails,
+        minute: formData.minute ? parseInt(formData.minute, 10) : null,
+        appointmentsInput: validAppointments,
+        clientStatus: formData.clientStatus,
+        respondentStatus: formData.respondentStatus,
+        settledDate: formData.settledDate || '',
+        agencyName: formData.agencyName || '',
+        agencyDescription: formData.agencyDescription || '',
+        agencyContactNumber: formData.agencyContactNumber || '',
       };
 
       if (isEditing) {
@@ -220,43 +389,53 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
 
           <div className="form-section">
             <h3>Program Information</h3>
-            <div className="form-group">
-              <label htmlFor="senaTitle">Program Title *</label>
-              <input
-                type="text"
-                id="senaTitle"
-                name="senaTitle"
-                value={formData.senaTitle}
-                onChange={handleChange}
-                required
-                placeholder="Enter program title"
-              />
-            </div>
-
             <div className="form-row">
-              {isEditing && (
-                <div className="form-group">
-                  <label htmlFor="senaStatus">Status *</label>
-                  <select
-                    id="senaStatus"
-                    name="senaStatus"
-                    value={formData.senaStatus}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="scheduled">Scheduled</option>
-                    <option value="dismissed">Dismissed</option>
-                    <option value="lack_of_interest">Lack of Interest</option>
-                    <option value="nlrc">NLRC</option>
-                    <option value="ongoing">On Going</option>
-                    <option value="settled">Settled</option>
-                    <option value="withdrawn">Withdrawn</option>
-                  </select>
-                </div>
-              )}
+              <div className="form-group">
+                <label htmlFor="seadNumber">SEAD Number (Auto-generated on Create)</label>
+                <input
+                  type="text"
+                  id="seadNumber"
+                  name="seadNumber"
+                  value={formData.seadNumber}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  readOnly={!isEditing}
+                  placeholder="SEAD-YYYY-MM-XXXX"
+                />
+              </div>
 
               <div className="form-group">
-                <label htmlFor="user">Assigned To *</label>
+                <label htmlFor="senaPurpose">Purpose of SENA</label>
+                <select
+                  id="senaPurpose"
+                  name="senaPurpose"
+                  value={formData.senaPurpose}
+                  onChange={handleChange}
+                >
+                  <option value="">Select a purpose...</option>
+                  <option value="recruitment_violation">Recruitment Violation</option>
+                  <option value="money_claims">Money Claims</option>
+                  <option value="daw">DAW</option>
+                  <option value="dae">DAE</option>
+                  <option value="rv_mc">RV/MC</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="senaTitle">Program Title <span style={{color: 'red'}}>*</span></label>
+                <input
+                  type="text"
+                  id="senaTitle"
+                  name="senaTitle"
+                  value={formData.senaTitle}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter program title"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="user">Assigned To <span style={{color: 'red'}}>*</span></label>
                 <select
                   id="user"
                   name="user"
@@ -279,7 +458,7 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
             <h3>Client Information</h3>
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="clientFirstName">First Name *</label>
+                <label htmlFor="clientFirstName">First Name <span style={{color: 'red'}}>*</span></label>
                 <input
                   type="text"
                   id="clientFirstName"
@@ -304,7 +483,7 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="clientLastName">Last Name *</label>
+                <label htmlFor="clientLastName">Last Name <span style={{color: 'red'}}>*</span></label>
                 <input
                   type="text"
                   id="clientLastName"
@@ -315,11 +494,23 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
                   placeholder="Last name"
                 />
               </div>
+
+              <div className="form-group">
+                <label htmlFor="clientSuffix">Suffix</label>
+                <input
+                  type="text"
+                  id="clientSuffix"
+                  name="clientSuffix"
+                  value={formData.clientSuffix}
+                  onChange={handleChange}
+                  placeholder="Jr., Sr., III, etc."
+                />
+              </div>
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="clientAge">Age *</label>
+                <label htmlFor="clientAge">Age <span style={{color: 'red'}}>*</span></label>
                 <input
                   type="number"
                   id="clientAge"
@@ -333,7 +524,7 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="clientContactNumber">Contact Number *</label>
+                <label htmlFor="clientContactNumber">Contact Number <span style={{color: 'red'}}>*</span></label>
                 <input
                   type="text"
                   id="clientContactNumber"
@@ -344,58 +535,428 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
                   placeholder="+63-9123456789"
                 />
               </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Gender (Optional)</label>
+                <div className="radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      name="clientGender"
+                      value="male"
+                      checked={formData.clientGender === 'male'}
+                      onChange={handleChange}
+                    />
+                    Male
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="clientGender"
+                      value="female"
+                      checked={formData.clientGender === 'female'}
+                      onChange={handleChange}
+                    />
+                    Female
+                  </label>
+                </div>
+              </div>
 
               <div className="form-group">
-                <label htmlFor="clientEmail">Email *</label>
+                <label>Base (Optional)</label>
+                <div className="radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      name="clientBase"
+                      value="landbased"
+                      checked={formData.clientBase === 'landbased'}
+                      onChange={handleChange}
+                    />
+                    Landbased
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="clientBase"
+                      value="seabased"
+                      checked={formData.clientBase === 'seabased'}
+                      onChange={handleChange}
+                    />
+                    Seabased
+                  </label>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Employment Status (Optional)</label>
+                <div className="radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      name="clientDeployed"
+                      value="deployed"
+                      checked={formData.clientDeployed === 'deployed'}
+                      onChange={handleChange}
+                    />
+                    Deployed
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="clientDeployed"
+                      value="non_deployed"
+                      checked={formData.clientDeployed === 'non_deployed'}
+                      onChange={handleChange}
+                    />
+                    Non-Deployed
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group checkbox-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="clientIndigency"
+                    checked={formData.clientIndigency}
+                    onChange={handleChange}
+                  />
+                  Indigency
+                </label>
+              </div>
+
+              <div className="form-group checkbox-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="clientParent"
+                    checked={formData.clientParent}
+                    onChange={handleChange}
+                  />
+                  Parent
+                </label>
+              </div>
+
+              <div className="form-group checkbox-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="clientPWD"
+                    checked={formData.clientPWD}
+                    onChange={handleChange}
+                  />
+                  PWD (Person with Disability)
+                </label>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Client Email(s) <span style={{color: 'red'}}>*</span> (At least 1 required)</label>
+              <div className="email-list">
+                {clientEmails.map((email, index) => (
+                  <div key={index} className="email-item">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => handleClientEmailChange(index, e.target.value)}
+                      placeholder="client@example.com"
+                      required
+                    />
+                    {clientEmails.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn-remove-email"
+                        onClick={() => removeClientEmail(index)}
+                        title="Remove email"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="email-add-section">
                 <input
                   type="email"
-                  id="clientEmail"
-                  name="clientEmail"
-                  value={formData.clientEmail}
+                  value={newClientEmail}
+                  onChange={(e) => setNewClientEmail(e.target.value)}
+                  placeholder="Add another client email..."
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addClientEmail())}
+                />
+                <button
+                  type="button"
+                  className="btn-add-email"
+                  onClick={addClientEmail}
+                >
+                  + Add Email
+                </button>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="clientStatus">Client Status <span style={{color: 'red'}}>*</span></label>
+                <select
+                  id="clientStatus"
+                  name="clientStatus"
+                  value={formData.clientStatus}
                   onChange={handleChange}
                   required
-                  placeholder="email@example.com"
-                />
+                >
+                  <option value="scheduled">SCHEDULED</option>
+                  <option value="drop_due_to_absences">DROP DUE TO ABSENCES</option>
+                  <option value="drop_due_to_lack_of_interest">DROP DUE TO LACK OF INTEREST</option>
+                  <option value="endorse_to_adjudicator">ENDORSE TO ADJUDICATOR</option>
+                  <option value="nlrc">NLRC</option>
+                  <option value="ongoing">ONGOING</option>
+                  <option value="settled">SETTLED</option>
+                  <option value="withdrawn">WITHDRAWN</option>
+                </select>
               </div>
             </div>
           </div>
 
           <div className="form-section">
-            <h3>Appointment Details</h3>
+            <h3>Respondent/Agency Information</h3>
+            
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="dateOfAppointment">Date of Appointment *</label>
+                <label htmlFor="agencySelect">Select Agency or Enter New</label>
+                <select
+                  id="agencySelect"
+                  value={formData.agencyName}
+                  onChange={handleAgencySelect}
+                >
+                  <option value="new">Select Agency</option>
+                  {agencies.map((agency, index) => (
+                    <option key={index} value={agency.agencyName}>
+                      {agency.agencyName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="agencyName">Agency Name <span style={{color: 'red'}}>*</span></label>
                 <input
-                  type="date"
-                  id="dateOfAppointment"
-                  name="dateOfAppointment"
-                  value={formData.dateOfAppointment}
+                  type="text"
+                  id="agencyName"
+                  name="agencyName"
+                  value={formData.agencyName}
                   onChange={handleChange}
                   required
+                  placeholder="Enter agency name..."
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="start_time">Start Time</label>
+                <label htmlFor="agencyDescription">Agency Description (Optional)</label>
                 <input
-                  type="time"
-                  id="start_time"
-                  name="start_time"
-                  value={formData.start_time}
+                  type="text"
+                  id="agencyDescription"
+                  name="agencyDescription"
+                  value={formData.agencyDescription}
                   onChange={handleChange}
+                  placeholder="Brief description of the agency"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="end_time">End Time</label>
+                <label htmlFor="agencyContactNumber">Agency Contact Number (Optional)</label>
                 <input
-                  type="time"
-                  id="end_time"
-                  name="end_time"
-                  value={formData.end_time}
+                  type="tel"
+                  id="agencyContactNumber"
+                  name="agencyContactNumber"
+                  value={formData.agencyContactNumber}
                   onChange={handleChange}
+                  placeholder="Contact number of the agency/respondent"
                 />
               </div>
+            </div>
+
+            <div className="form-group">
+              <label>Respondent Email(s) <span style={{color: 'red'}}>*</span> (At least 1 required)</label>
+              <div className="email-list">
+                {respondentEmails.map((email, index) => (
+                  <div key={index} className="email-item">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => handleRespondentEmailChange(index, e.target.value)}
+                      placeholder="respondent@example.com"
+                      required
+                    />
+                    {respondentEmails.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn-remove-email"
+                        onClick={() => removeRespondentEmail(index)}
+                        title="Remove email"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="email-add-section">
+                <input
+                  type="email"
+                  value={newRespondentEmail}
+                  onChange={(e) => setNewRespondentEmail(e.target.value)}
+                  placeholder="Add another respondent email..."
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addRespondentEmail())}
+                />
+                <button
+                  type="button"
+                  className="btn-add-email"
+                  onClick={addRespondentEmail}
+                >
+                  + Add Email
+                </button>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="respondentStatus">Respondent Status <span style={{color: 'red'}}>*</span></label>
+                <select
+                  id="respondentStatus"
+                  name="respondentStatus"
+                  value={formData.respondentStatus}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="scheduled">SCHEDULED</option>
+                  <option value="drop_due_to_absences">DROP DUE TO ABSENCES</option>
+                  <option value="drop_due_to_lack_of_interest">DROP DUE TO LACK OF INTEREST</option>
+                  <option value="endorse_to_adjudicator">ENDORSE TO ADJUDICATOR</option>
+                  <option value="nlrc">NLRC</option>
+                  <option value="ongoing">ONGOING</option>
+                  <option value="settled">SETTLED</option>
+                  <option value="withdrawn">WITHDRAWN</option>
+                </select>
+              </div>
+              {(formData.clientStatus === 'settled' || formData.respondentStatus === 'settled') && (
+                <div className="form-group">
+                  <label htmlFor="settledDate">Settled Date</label>
+                  <input
+                    type="date"
+                    id="settledDate"
+                    name="settledDate"
+                    value={formData.settledDate}
+                    onChange={handleChange}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h3>Meeting Minutes</h3>
+            <div className="form-group">
+              <label htmlFor="minute">Meeting Minutes</label>
+              <select
+                id="minute"
+                name="minute"
+                value={formData.minute}
+                onChange={handleChange}
+              >
+                <option value="">Select minutes...</option>
+                {minutes.map((m) => (
+                  <option key={m.minute_id} value={m.minute_id}>
+                    {m.minuteTitle}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h3>Appointment Details</h3>
+            
+            <div className="appointment-list">
+              {appointments.map((appointment, index) => (
+                <div key={index} className="appointment-item">
+                  <div className="appointment-fields">
+                    <div className="form-group">
+                      <label>Date <span style={{color: 'red'}}>*</span></label>
+                      <input
+                        type="date"
+                        value={appointment.dateOfAppointment}
+                        onChange={(e) => handleAppointmentChange(index, 'dateOfAppointment', e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Start Time</label>
+                      <input
+                        type="time"
+                        value={appointment.startTime}
+                        onChange={(e) => handleAppointmentChange(index, 'startTime', e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>End Time</label>
+                      <input
+                        type="time"
+                        value={appointment.endTime}
+                        onChange={(e) => handleAppointmentChange(index, 'endTime', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  {appointments.length > 1 && (
+                    <button
+                      type="button"
+                      className="btn-remove-appointment"
+                      onClick={() => removeAppointment(index)}
+                      title="Remove appointment"
+                    >
+                      ✕ Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="appointment-add-section">
+              <div className="appointment-fields">
+                <div className="form-group">
+                  <label>Date</label>
+                  <input
+                    type="date"
+                    value={newAppointment.dateOfAppointment}
+                    onChange={(e) => setNewAppointment({ ...newAppointment, dateOfAppointment: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Start Time</label>
+                  <input
+                    type="time"
+                    value={newAppointment.startTime}
+                    onChange={(e) => setNewAppointment({ ...newAppointment, startTime: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>End Time</label>
+                  <input
+                    type="time"
+                    value={newAppointment.endTime}
+                    onChange={(e) => setNewAppointment({ ...newAppointment, endTime: e.target.value })}
+                  />
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-add-appointment"
+                onClick={addAppointment}
+              >
+                + Add
+              </button>
             </div>
           </div>
 

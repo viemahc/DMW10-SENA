@@ -11,6 +11,7 @@ urlpatterns = [
     # Admin endpoints
     path('admin/users/', views.get_all_users, name='get_all_users'),
     path('admin/users/<int:user_id>/', views.get_user_detail_admin, name='get_user_detail_admin'),
+    path('admin/users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
     path('admin/users/<int:user_id>/assign-role/', views.assign_role, name='assign_role'),
     path('admin/users/<int:user_id>/remove-role/<int:role_id>/', views.remove_role, name='remove_role'),
     path('admin/roles/', views.get_all_roles, name='get_all_roles'),

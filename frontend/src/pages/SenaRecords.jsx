@@ -127,11 +127,12 @@ const SenaRecords = () => {
 
   const getStatusColor = (status) => {
     const colorMap = {
-      'scheduled': '#5e5e5e',
-      'dismissed': '#FF0000',
-      'lack_of_interest': '#000000',
+      'scheduled': '#0066cc',
+      'drop_due_to_absences': '#FF6B6B',
+      'drop_due_to_lack_of_interest': '#FFA500',
+      'endorse_to_adjudicator': '#FF1493',
       'nlrc': '#800080',
-      'ongoing': '#ab9f1c',
+      'ongoing': '#FFD700',
       'settled': '#008000',
       'withdrawn': '#0000FF',
     };
@@ -139,29 +140,50 @@ const SenaRecords = () => {
   };
 
   const statusLegend = [
-    { status: 'scheduled', label: 'Scheduled', color: '#5e5e5e' },
-    { status: 'dismissed', label: 'Dismissed', color: '#FF0000' },
-    { status: 'lack_of_interest', label: 'Lack of Interest', color: '#000000' },
+    { status: 'scheduled', label: 'SCHEDULED', color: '#0066cc' },
+    { status: 'drop_due_to_absences', label: 'DROP DUE TO ABSENCES', color: '#FF6B6B' },
+    { status: 'drop_due_to_lack_of_interest', label: 'DROP DUE TO LACK OF INTEREST', color: '#FFA500' },
+    { status: 'endorse_to_adjudicator', label: 'ENDORSE TO ADJUDICATOR', color: '#FF1493' },
     { status: 'nlrc', label: 'NLRC', color: '#800080' },
-    { status: 'ongoing', label: 'On Going', color: '#ab9f1c' },
-    { status: 'settled', label: 'Settled', color: '#008000' },
-    { status: 'withdrawn', label: 'Withdrawn', color: '#0000FF' },
+    { status: 'ongoing', label: 'ONGOING', color: '#FFD700' },
+    { status: 'settled', label: 'SETTLED', color: '#008000' },
+    { status: 'withdrawn', label: 'WITHDRAWN', color: '#0000FF' },
   ];
 
-  const calendarEvents = records.map(record => {
-    const dateOnly = record.dateOfAppointment.split('T')[0];
-    return {
-      ...record,
-      id: record.sena_id,
-      title: `${record.senaTitle} - ${record.userFullName}`,
-      start: new Date(`${dateOnly}T${record.start_time || '00:00:00'}`),
-      end: new Date(`${dateOnly}T${record.end_time || '23:59:59'}`),
-      resource: record,
-    };
+  const calendarEvents = records.flatMap(record => {
+    const appointments = record.appointments || [];
+    
+    // If no appointments, return an event without time
+    if (appointments.length === 0) {
+      return [{
+        ...record,
+        id: `${record.sena_id}-0`,
+        title: `${record.senaTitle} - ${record.userFullName}`,
+        start: new Date(),
+        end: new Date(),
+        resource: record,
+      }];
+    }
+    
+    // Create an event for each appointment
+    return appointments.map((appointment, index) => {
+      const dateOnly = appointment.dateOfAppointment || '';
+      const startTime = appointment.startTime || '00:00:00';
+      const endTime = appointment.endTime || '23:59:59';
+      
+      return {
+        ...record,
+        id: `${record.sena_id}-${index}`,
+        title: `${record.senaTitle} - ${record.userFullName}`,
+        start: new Date(`${dateOnly}T${startTime}`),
+        end: new Date(`${dateOnly}T${endTime}`),
+        resource: record,
+      };
+    });
   });
 
   const eventStyleGetter = (event) => {
-    const backgroundColor = getStatusColor(event.senaStatus);
+    const backgroundColor = getStatusColor(event.clientStatus);
     const lightBackgrounds = ['#FFD700', '#808080'];
     const textColor = lightBackgrounds.includes(backgroundColor) ? '#000000' : '#FFFFFF';
     

@@ -311,6 +311,44 @@ def remove_role(request, user_id, role_id):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(['DELETE'])
+def delete_user(request, user_id):
+    """Delete user (Admin only)"""
+    if not is_administrator(request):
+        return Response({
+            'status': 'error',
+            'message': 'Only administrators can access this resource'
+        }, status=status.HTTP_403_FORBIDDEN)
+    
+    # Prevent admin from deleting themselves
+    current_user_id = request.session.get('user_id')
+    if current_user_id == user_id:
+        return Response({
+            'status': 'error',
+            'message': 'Cannot delete your own account'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        user = User.objects.get(user_id=user_id)
+        user_name = user.full_name
+        user.delete()
+        
+        return Response({
+            'status': 'success',
+            'message': f'User {user_name} deleted successfully'
+        }, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({
+            'status': 'error',
+            'message': 'User not found'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({
+            'status': 'error',
+            'message': f'An error occurred: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 @api_view(['GET'])
 def get_all_roles(request):
     """Get all available roles"""

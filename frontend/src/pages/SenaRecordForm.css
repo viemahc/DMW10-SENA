@@ -130,3 +130,341 @@
   margin: 0;
   padding: 0;
 }
+
+/* Email List Styles */
+.email-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.email-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.email-item input {
+  flex: 1;
+  padding: 11px 13px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.email-item input:focus {
+  outline: none;
+  border-color: #0035aa;
+  box-shadow: 0 0 0 4px rgba(0, 53, 170, 0.12);
+}
+
+.btn-remove-email {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.btn-remove-email:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.email-add-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.email-add-section input {
+  flex: 1;
+  padding: 11px 13px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.email-add-section input:focus {
+  outline: none;
+  border-color: #0035aa;
+  box-shadow: 0 0 0 4px rgba(0, 53, 170, 0.12);
+}
+
+.btn-add-email {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 11px 18px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-add-email:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+/* Appointment List Styles */
+.appointment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.appointment-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.appointment-item:hover {
+  border-color: #0035aa;
+  background-color: #f0f5ff;
+}
+
+.appointment-fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  flex: 1;
+}
+
+.appointment-item .form-group {
+  margin-bottom: 0;
+}
+
+.appointment-item .form-group label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.appointment-item .form-group input {
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+.btn-remove-appointment {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  align-self: center;
+  margin-top: 22px;
+}
+
+.btn-remove-appointment:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.appointment-add-section {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 16px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.appointment-add-section .appointment-fields {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.appointment-add-section .form-group label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.appointment-add-section .form-group input {
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+.btn-add-appointment {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 11px 18px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-add-appointment:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+/* Radio Group Styles */
+.radio-group {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.radio-group label input[type='radio'] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Checkbox Group Styles */
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.checkbox-group label input[type='checkbox'] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+/* PDF Upload Styles */
+.pdf-upload-section {
+  background-color: #f0f8ff;
+  border: 2px solid #87ceeb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.pdf-upload-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #0035aa;
+  font-size: 16px;
+}
+
+.file-upload-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.file-upload-group input[type="file"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.btn-upload-pdf {
+  padding: 10px 20px;
+  background-color: #0035aa;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.btn-upload-pdf:hover:not(:disabled) {
+  background-color: #002080;
+}
+
+.btn-upload-pdf:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.uploaded-files {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.uploaded-files h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 14px;
+}
+
+.files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.file-name {
+  flex: 1;
+  color: #333;
+  font-weight: 500;
+}
+
+.btn-download {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn-download:hover {
+  background-color: #45a049;
+}
