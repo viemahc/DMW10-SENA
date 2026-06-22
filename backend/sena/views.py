@@ -132,6 +132,55 @@ class SenaRecordViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
+    @action(detail=False, methods=['post'])
+    def send_email(self, request):
+        """Send appointment schedule email to client and respondent emails"""
+        try:
+            self.check_authentication()
+            
+            from django.core.mail import send_mass_mail
+            
+            recipient_emails = request.data.get('recipient_emails', [])
+            subject = request.data.get('subject', 'SENA Schedule Notification')
+            message = request.data.get('message', '')
+            
+            if not recipient_emails:
+                return Response(
+                    {'error': 'No recipient emails provided'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            if not message:
+                return Response(
+                    {'error': 'No message provided'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Remove duplicates and empty strings
+            recipient_emails = list(set([email.strip() for email in recipient_emails if email.strip()]))
+            
+            # Prepare emails - send individual emails to each recipient
+            emails = [
+                (subject, message, 'chaves.jayemerald@gmail.com', [email])
+                for email in recipient_emails
+            ]
+            
+            # Send emails
+            from django.core.mail import send_mass_mail
+            send_mass_mail(emails, fail_silently=False)
+            
+            return Response({
+                'success': True,
+                'message': f'Email sent to {len(recipient_emails)} recipient(s)',
+                'recipients_count': len(recipient_emails)
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to send email: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 class EmailClientViewSet(viewsets.ModelViewSet):
     queryset = EmailClient.objects.all()

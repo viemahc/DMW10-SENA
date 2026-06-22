@@ -312,6 +312,29 @@
   transform: scale(1.15);
 }
 
+.btn-send-email {
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.3rem;
+  transition: transform 0.2s, background-color 0.2s;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-send-email:hover:not(:disabled) {
+  background-color: #fff0e7;
+  transform: scale(1.15);
+}
+
+.btn-send-email:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* Minutes cell flex container */
 .sena-records-table td:has(.btn-upload-minute) {
   padding: 0.6rem 0.4rem;

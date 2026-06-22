@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { useAuth } from '../context/AuthContext';
 import UploadMinuteModal from '../components/UploadMinuteModal';
+import SendEmailModal from '../components/SendEmailModal';
 import './SenaRecordsList.css';
 
 const SenaRecordsList = () => {
@@ -25,6 +26,8 @@ const SenaRecordsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedRecordForUpload, setSelectedRecordForUpload] = useState(null);
+  const [showSendEmailModal, setShowSendEmailModal] = useState(false);
+  const [selectedRecordForEmail, setSelectedRecordForEmail] = useState(null);
 
   useEffect(() => {
     const agencyFromUrl = searchParams.get('agency');
@@ -146,6 +149,16 @@ const SenaRecordsList = () => {
   const handleUploadSuccess = () => {
     // Refetch records to show the new minute
     fetchRecords();
+  };
+
+  const handleSendEmail = (record) => {
+    setSelectedRecordForEmail(record);
+    setShowSendEmailModal(true);
+  };
+
+  const handleSendEmailSuccess = () => {
+    // Optionally refetch records or show notification
+    setShowSendEmailModal(false);
   };
 
   const exportToXLSX = () => {
@@ -439,13 +452,26 @@ const SenaRecordsList = () => {
                     </div>
                   </td>
                   <td>
-                    <button
-                      className="btn-view"
-                      onClick={() => navigate(`/sena-records-detail/${record.sena_id}`)}
-                      title="View details"
-                    >
-                      👁️
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <button
+                        className="btn-view"
+                        onClick={() => navigate(`/sena-records-detail/${record.sena_id}`)}
+                        title="View details"
+                      >
+                        👁️
+                      </button>
+                      <button
+                        className="btn-send-email"
+                        onClick={() => handleSendEmail(record)}
+                        title="Send schedule email"
+                        disabled={
+                          (!record.clientEmails || record.clientEmails.length === 0) &&
+                          (!record.respondentEmails || record.respondentEmails.length === 0)
+                        }
+                      >
+                        📧
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -487,6 +513,16 @@ const SenaRecordsList = () => {
         recordId={selectedRecordForUpload?.sena_id}
         senaTitle={selectedRecordForUpload?.senaTitle}
         onSuccess={handleUploadSuccess}
+      />
+
+      <SendEmailModal
+        isOpen={showSendEmailModal}
+        onClose={() => {
+          setShowSendEmailModal(false);
+          setSelectedRecordForEmail(null);
+        }}
+        record={selectedRecordForEmail}
+        onSuccess={handleSendEmailSuccess}
       />
     </div>
   );
