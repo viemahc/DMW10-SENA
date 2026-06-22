@@ -46,14 +46,14 @@ const Sidebar = ({ isOpen = true, onToggle }) => {
         <a href="/dashboard" className={`nav-item ${isActive('/dashboard')}`} title="Dashboard">
           <span className="icon">🏠</span> <span>Dashboard</span>
         </a>
-        <a href="/sena-records" className={`nav-item ${isActive('/sena-records')}`} title="SENA Records Calendar">
+        <a href="/sena-records" className={`nav-item ${isActive('/sena-records')}`} title="SENA Calendar">
           <span className="icon">📅</span> <span>SENA Calendar</span>
         </a>
-        <a href="/sena-records-list" className={`nav-item ${isActive('/sena-records-list')}`} title="SENA Records List">
-          <span className="icon">📋</span> <span>SENA Records List</span>
+        <a href="/sena-records-list" className={`nav-item ${isActive('/sena-records-list')}`} title="SENA Records">
+          <span className="icon">📋</span> <span>SENA Records</span>
         </a>
-        <a href="/agency-summary" className={`nav-item ${isActive('/agency-summary')}`} title="Agency Summary">
-          <span className="icon">🏢</span> <span>Agency Summary</span>
+        <a href="/agency-summary" className={`nav-item ${isActive('/agency-summary')}`} title="Agency Records">
+          <span className="icon">🏢</span> <span>Agency Records</span>
         </a>
         <a href="/profile" className={`nav-item ${isActive('/profile')}`} title="Profile">
           <span className="icon">👤</span> <span>Profile</span>

@@ -1,13 +1,13 @@
 .sena-list-container {
-  padding: 2rem;
+  padding: 1.25rem;
   background: #f8f9fa;
   min-height: 100vh;
 }
 
 .sena-list-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   background: white;
-  padding: 2rem;
+  padding: 1.25rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-left: 5px solid #0035aa;
@@ -21,30 +21,30 @@
 }
 
 .sena-list-header h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #0035aa;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
   font-weight: 700;
 }
 
 .sena-list-header p {
   color: #666;
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .btn-export {
   background: linear-gradient(135deg, #28a745 0%, #218838 100%);
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 9px 18px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  margin-left: 1rem;
+  margin-left: 0.75rem;
   align-self: center;
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
 }
@@ -67,8 +67,8 @@
 
 .loading {
   text-align: center;
-  padding: 3rem;
-  font-size: 1.1rem;
+  padding: 2rem;
+  font-size: 1rem;
   color: #666;
   background: white;
   border-radius: 12px;
@@ -78,13 +78,13 @@
 /* Filters */
 .sena-list-filters {
   background: white;
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .filter-group {
@@ -94,10 +94,10 @@
 .search-input,
 .filter-select {
   width: 100%;
-  padding: 10px 15px;
+  padding: 8px 12px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: all 0.3s ease;
 }
 
@@ -124,9 +124,9 @@
 }
 
 .records-count {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #666;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   font-weight: 500;
 }
 
@@ -136,13 +136,14 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
-  margin-bottom: 2rem;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1.25rem;
 }
 
 .sena-records-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .sena-records-table thead {
@@ -153,7 +154,7 @@
 }
 
 .sena-records-table th {
-  padding: 1rem;
+  padding: 0.75rem 0.6rem;
   text-align: left;
   font-weight: 600;
   color: #0035aa;
@@ -168,7 +169,7 @@
 }
 
 .sena-records-table td {
-  padding: 1rem;
+  padding: 0.75rem 0.6rem;
   border-bottom: 1px solid #f0f0f0;
   color: #333;
 }
@@ -184,7 +185,7 @@
 .no-records {
   text-align: center;
   color: #999;
-  padding: 2rem !important;
+  padding: 1.5rem !important;
   font-style: italic;
 }
 
@@ -198,76 +199,79 @@
   display: inline-block;
   background-color: #e7f3ff;
   color: #0035aa;
-  padding: 0.4rem 0.8rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 6px;
   font-weight: 500;
   white-space: nowrap;
+  font-size: 0.75rem;
 }
 
 .client-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;
 }
 
 .client-name {
   font-weight: 600;
   color: #333;
+  font-size: 0.8rem;
 }
 
 .client-detail {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #999;
 }
 
 .agency-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;
 }
 
 .agency-contact {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #666;
 }
 
 .status-badge {
   display: inline-block;
   color: white;
-  padding: 0.4rem 0.8rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 6px;
   font-weight: 500;
   white-space: nowrap;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;
 }
 
 .emails-count {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #999;
 }
 
 .appointments-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;
 }
 
 .appointments-info .count {
   font-weight: 600;
   color: #0035aa;
+  font-size: 0.8rem;
 }
 
 .appointments-info .dates {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.75rem;
+  gap: 0.15rem;
+  font-size: 0.7rem;
   color: #666;
 }
 
@@ -278,9 +282,9 @@
 .btn-view {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.3rem;
   transition: transform 0.2s;
   border-radius: 4px;
 }
@@ -288,6 +292,36 @@
 .btn-view:hover {
   background-color: #f0f0f0;
   transform: scale(1.1);
+}
+
+.btn-upload-minute {
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.3rem;
+  transition: transform 0.2s, background-color 0.2s;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-upload-minute:hover {
+  background-color: #e7f3ff;
+  transform: scale(1.15);
+}
+
+/* Minutes cell flex container */
+.sena-records-table td:has(.btn-upload-minute) {
+  padding: 0.6rem 0.4rem;
+}
+
+.sena-records-table td:has(.btn-upload-minute) > div {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 .btn-download-minutes {
@@ -320,8 +354,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  padding: 2rem;
+  gap: 0.75rem;
+  padding: 1.25rem;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -331,9 +365,9 @@
   background: linear-gradient(135deg, #0035aa 0%, #0024cc 100%);
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -353,8 +387,9 @@
 .page-info {
   font-weight: 600;
   color: #0035aa;
-  min-width: 120px;
+  min-width: 110px;
   text-align: center;
+  font-size: 0.85rem;
 }
 
 /* Responsive */
@@ -375,12 +410,17 @@
 
 @media (max-width: 768px) {
   .sena-list-container {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 
   .sena-list-header {
     flex-direction: column;
     gap: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .sena-list-header h1 {
+    font-size: 1.5rem;
   }
 
   .btn-export {
@@ -390,18 +430,157 @@
 
   .sena-list-filters {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .filter-group {
+    flex-direction: column;
   }
 
   .table-wrapper {
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .sena-records-table {
     font-size: 0.75rem;
+    min-width: 1200px;
   }
 
   .sena-records-table th,
   .sena-records-table td {
-    padding: 0.5rem;
+    padding: 0.6rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .client-info,
+  .agency-info,
+  .appointments-info {
+    gap: 0.2rem;
+  }
+
+  .client-name,
+  .client-detail {
+    font-size: 0.75rem;
+  }
+
+  .btn-view,
+  .btn-upload-minute {
+    padding: 0.3rem;
+    font-size: 0.9rem;
   }
 
   .pagination {
     flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .btn-pagination {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .page-info {
+    min-width: 100%;
+    font-size: 0.85rem;
+  }
+
+  .records-count {
+    font-size: 0.8rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sena-list-container {
+    padding: 0.5rem;
+  }
+
+  .sena-list-header {
+    padding: 1rem 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .sena-list-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .sena-list-header p {
+    font-size: 0.85rem;
+  }
+
+  .btn-export {
+    padding: 10px 16px;
+    font-size: 0.75rem;
+  }
+
+  .sena-list-filters {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .search-input,
+  .filter-select {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .sena-records-table {
+    font-size: 0.7rem;
+    min-width: 1000px;
+  }
+
+  .sena-records-table th {
+    padding: 0.4rem 0.3rem;
+  }
+
+  .sena-records-table td {
+    padding: 0.4rem 0.3rem;
+  }
+
+  .sead-cell,
+  .client-name {
+    font-size: 0.65rem;
+  }
+
+  .client-detail {
+    font-size: 0.6rem;
+  }
+
+  .status-badge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+  }
+
+  .badge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+  }
+
+  .btn-view,
+  .btn-upload-minute {
+    padding: 0.2rem;
+    font-size: 0.8rem;
+  }
+
+  .btn-download-minutes {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+
+  .pagination {
+    gap: 0.25rem;
+  }
+
+  .btn-pagination {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+
+  .page-info {
+    font-size: 0.75rem;
+    min-width: auto;
   }
 }

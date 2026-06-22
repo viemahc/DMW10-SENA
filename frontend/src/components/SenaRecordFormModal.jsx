@@ -24,7 +24,6 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
     clientIndigency: false,
     clientParent: false,
     clientPWD: false,
-    minute: '',
     clientStatus: 'scheduled',
     respondentStatus: 'scheduled',
     settledDate: '',
@@ -36,7 +35,6 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
   const [users, setUsers] = useState([]);
   const [emailClients, setEmailClients] = useState([]);
   const [emailRespondents, setEmailRespondents] = useState([]);
-  const [minutes, setMinutes] = useState([]);
   const [agencies, setAgencies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -93,18 +91,6 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
       }
     };
 
-    const fetchMinutes = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/sena/minutes/', {
-          withCredentials: true,
-        });
-        const minutesList = response.data.results || response.data || [];
-        setMinutes(Array.isArray(minutesList) ? minutesList : []);
-      } catch (err) {
-        console.error('Error fetching minutes:', err);
-      }
-    };
-
     const fetchAgencies = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/sena/records/agencies/', {
@@ -120,7 +106,6 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
     fetchUsers();
     fetchEmailClients();
     fetchEmailRespondents();
-    fetchMinutes();
     fetchAgencies();
   }, []);
 
@@ -153,7 +138,6 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
             clientIndigency: record.clientIndigency || false,
             clientParent: record.clientParent || false,
             clientPWD: record.clientPWD || false,
-            minute: record.minute || '',
             clientStatus: record.clientStatus || 'scheduled',
             respondentStatus: record.respondentStatus || 'scheduled',
             settledDate: record.settledDate || '',
@@ -343,7 +327,6 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
         clientPWD: formData.clientPWD,
         clientEmailsInput: validClientEmails,
         respondentEmailsInput: validRespondentEmails,
-        minute: formData.minute ? parseInt(formData.minute, 10) : null,
         appointmentsInput: validAppointments,
         clientStatus: formData.clientStatus,
         respondentStatus: formData.respondentStatus,
@@ -853,26 +836,6 @@ const SenaRecordFormModal = ({ onClose, onSuccess, recordId }) => {
                   />
                 </div>
               )}
-            </div>
-          </div>
-
-          <div className="form-section">
-            <h3>Meeting Minutes</h3>
-            <div className="form-group">
-              <label htmlFor="minute">Meeting Minutes</label>
-              <select
-                id="minute"
-                name="minute"
-                value={formData.minute}
-                onChange={handleChange}
-              >
-                <option value="">Select minutes...</option>
-                {minutes.map((m) => (
-                  <option key={m.minute_id} value={m.minute_id}>
-                    {m.minuteTitle}
-                  </option>
-                ))}
-              </select>
             </div>
           </div>
 

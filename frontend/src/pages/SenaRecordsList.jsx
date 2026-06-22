@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { useAuth } from '../context/AuthContext';
+import UploadMinuteModal from '../components/UploadMinuteModal';
 import './SenaRecordsList.css';
 
 const SenaRecordsList = () => {
@@ -22,6 +23,8 @@ const SenaRecordsList = () => {
   const [sortConfig, setSortConfig] = useState({ key: 'seadNumber', direction: 'desc' });
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedRecordForUpload, setSelectedRecordForUpload] = useState(null);
 
   useEffect(() => {
     const agencyFromUrl = searchParams.get('agency');
@@ -133,6 +136,16 @@ const SenaRecordsList = () => {
       key,
       direction: sortConfig.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc',
     });
+  };
+
+  const handleUploadMinute = (record) => {
+    setSelectedRecordForUpload(record);
+    setShowUploadModal(true);
+  };
+
+  const handleUploadSuccess = () => {
+    // Refetch records to show the new minute
+    fetchRecords();
   };
 
   const exportToXLSX = () => {
@@ -402,19 +415,28 @@ const SenaRecordsList = () => {
                     )}
                   </td>
                   <td>
-                    {record.minute ? (
-                      <a
-                        href={record.minute.minuteFile.startsWith('http') ? record.minute.minuteFile : `http://localhost:8000${record.minute.minuteFile}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn-download-minutes"
-                        title={record.minute.minuteTitle}
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      {record.minute ? (
+                        <a
+                          href={record.minute.minuteFile.startsWith('http') ? record.minute.minuteFile : `http://localhost:8000${record.minute.minuteFile}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-download-minutes"
+                          title={record.minute.minuteTitle}
+                        >
+                          📄 {record.minute.minuteTitle}
+                        </a>
+                      ) : (
+                        <span className="no-minutes">-</span>
+                      )}
+                      <button
+                        className="btn-upload-minute"
+                        onClick={() => handleUploadMinute(record)}
+                        title={record.minute ? 'Update minute' : 'Upload minute'}
                       >
-                        📄 {record.minute.minuteTitle}
-                      </a>
-                    ) : (
-                      <span className="no-minutes">-</span>
-                    )}
+                        {record.minute ? '📤' : '➕'}
+                      </button>
+                    </div>
                   </td>
                   <td>
                     <button
@@ -455,6 +477,17 @@ const SenaRecordsList = () => {
           </button>
         </div>
       )}
+
+      <UploadMinuteModal
+        isOpen={showUploadModal}
+        onClose={() => {
+          setShowUploadModal(false);
+          setSelectedRecordForUpload(null);
+        }}
+        recordId={selectedRecordForUpload?.sena_id}
+        senaTitle={selectedRecordForUpload?.senaTitle}
+        onSuccess={handleUploadSuccess}
+      />
     </div>
   );
 };

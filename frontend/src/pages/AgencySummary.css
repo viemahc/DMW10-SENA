@@ -392,70 +392,367 @@
   background: #0028cc;
 }
 
-/* Responsive Modal */
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .agency-container {
+    padding: 15px;
+  }
+
+  .agencies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+  }
+
+  .agency-header {
+    padding: 20px;
+  }
+
+  .agency-header h1 {
+    font-size: 24px;
+  }
+
+  .header-stats {
+    gap: 15px;
+  }
+
+  .stat-box {
+    padding: 12px 15px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+}
+
 @media (max-width: 768px) {
+  .agency-container {
+    padding: 10px;
+  }
+
+  .agency-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px 15px;
+  }
+
+  .agency-header h1 {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .agency-header p {
+    font-size: 13px;
+  }
+
+  .header-stats {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 0;
+  }
+
+  .stat-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .stat-number {
+    font-size: 20px;
+    margin-bottom: 3px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+
+  .agency-controls {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .search-box {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .search-input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .sort-controls {
+    width: 100%;
+    justify-content: stretch;
+    gap: 8px;
+  }
+
+  .sort-btn {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 12px;
+    border-width: 1px;
+  }
+
+  .agencies-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .agency-card {
+    border-radius: 10px;
+  }
+
+  .card-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .agency-info h2 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .contact {
+    font-size: 11px;
+  }
+
+  .report-count {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .card-content {
+    padding: 15px;
+  }
+
+  .report-label {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .status-breakdown {
+    padding: 10px;
+    font-size: 11px;
+  }
+
+  .status-breakdown small {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .card-footer {
+    padding: 12px 15px;
+  }
+
+  .btn-view-records {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  /* Modal Responsive */
   .modal-content {
     max-width: 95%;
+    max-height: 90vh;
   }
 
   .modal-header {
     flex-direction: column;
     gap: 10px;
     text-align: center;
+    padding: 15px 20px;
+    align-items: center;
   }
 
   .modal-header h2 {
     font-size: 18px;
+    margin: 0;
+  }
+
+  .btn-close-modal {
+    position: static;
+    width: auto;
   }
 
   .summary-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .summary-item {
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .summary-value {
+    font-size: 14px;
   }
 }
-@media (max-width: 768px) {
+
+@media (max-width: 480px) {
+  .agency-container {
+    padding: 8px;
+    max-width: 100%;
+  }
+
   .agency-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
+    padding: 15px 12px;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .agency-header h1 {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .agency-header p {
+    font-size: 12px;
   }
 
   .header-stats {
-    width: 100%;
-    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .stat-box {
-    flex: 1;
-    min-width: 150px;
+    min-width: 100px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .stat-number {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.5px;
   }
 
   .agency-controls {
-    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
   }
 
-  .search-box {
-    width: 100%;
-  }
-
-  .sort-controls {
-    width: 100%;
-    justify-content: space-between;
+  .search-input {
+    padding: 9px 10px;
+    font-size: 12px;
   }
 
   .sort-btn {
-    flex: 1;
+    padding: 9px 10px;
+    font-size: 11px;
   }
 
   .agencies-grid {
-    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .agency-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   }
 
   .card-header {
-    flex-wrap: wrap;
-    gap: 15px;
+    padding: 12px;
+    gap: 10px;
+    border-bottom-width: 2px;
   }
 
-  .agency-info {
-    flex: 1;
+  .agency-info h2 {
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+
+  .contact {
+    font-size: 10px;
+  }
+
+  .report-count {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  .card-content {
+    padding: 12px;
+  }
+
+  .report-label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .status-breakdown {
+    padding: 8px;
+    border-left-width: 2px;
+    font-size: 10px;
+  }
+
+  .status-breakdown small {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .card-footer {
+    padding: 10px 12px;
+  }
+
+  .btn-view-records {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .no-agencies {
+    padding: 40px 15px;
+    font-size: 14px;
+  }
+
+  /* Modal Responsive Small */
+  .modal-content {
+    max-width: 98%;
+    width: 98%;
+  }
+
+  .modal-header {
+    padding: 12px 15px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-item {
+    padding: 10px;
+    font-size: 11px;
+  }
+
+  .summary-label {
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+
+  .summary-value {
+    font-size: 13px;
   }
 }

@@ -27,7 +27,6 @@ const SenaRecordForm = () => {
     clientIndigency: false,
     clientParent: false,
     clientPWD: false,
-    minute: '',
     clientStatus: 'scheduled',
     respondentStatus: 'scheduled',
     settledDate: '',
@@ -39,7 +38,6 @@ const SenaRecordForm = () => {
   const [users, setUsers] = useState([]);
   const [emailClients, setEmailClients] = useState([]);
   const [emailRespondents, setEmailRespondents] = useState([]);
-  const [minutes, setMinutes] = useState([]);
   const [agencies, setAgencies] = useState([]);
   const [loading, setLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
@@ -58,14 +56,11 @@ const SenaRecordForm = () => {
     startTime: '',
     endTime: '',
   });
-  const [uploadedMinutes, setUploadedMinutes] = useState([]);
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchUsers();
     fetchEmailClients();
     fetchEmailRespondents();
-    fetchMinutes();
     fetchAgencies();
     if (isEditMode) {
       fetchRecord();
@@ -131,18 +126,6 @@ const SenaRecordForm = () => {
     }
   };
 
-  const fetchMinutes = async () => {
-    try {
-      const response = await axios.get('http://localhost:8000/api/sena/minutes/', {
-        withCredentials: true,
-      });
-      const minutesList = response.data.results || response.data || [];
-      setMinutes(Array.isArray(minutesList) ? minutesList : []);
-    } catch (err) {
-      console.error('Error fetching minutes:', err);
-    }
-  };
-
   const fetchAgencies = async () => {
     try {
       const response = await axios.get('http://localhost:8000/api/sena/records/agencies/', {
@@ -179,7 +162,6 @@ const SenaRecordForm = () => {
         clientIndigency: data.clientIndigency || false,
         clientParent: data.clientParent || false,
         clientPWD: data.clientPWD || false,
-        minute: data.minute || '',
         clientStatus: data.clientStatus || 'scheduled',
         respondentStatus: data.respondentStatus || 'scheduled',
         settledDate: data.settledDate || '',
@@ -198,19 +180,6 @@ const SenaRecordForm = () => {
         startTime: '',
         endTime: '',
       }]);
-
-      // Load uploaded minutes if they exist for this record
-      if (data.minute) {
-        try {
-          const minuteResponse = await axios.get(
-            `http://localhost:8000/api/sena/minutes/${data.minute}/`,
-            { withCredentials: true }
-          );
-          setUploadedMinutes([minuteResponse.data]);
-        } catch (err) {
-          console.error('Error loading minutes:', err);
-        }
-      }
     } catch (err) {
       console.error('Error fetching record:', err);
       const errorMessage = err.response?.data?.detail || err.message || 'Failed to fetch record';
@@ -323,68 +292,6 @@ const SenaRecordForm = () => {
     setAppointments(appointments.filter((_, i) => i !== index));
   };
 
-  const handlePdfUpload = async (e) => {
-    const file = e.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      // File is valid, will be uploaded when submit button is clicked
-    } else if (file) {
-      setError('Please select a PDF file');
-    }
-  };
-
-  const submitPdfUpload = async () => {
-    try {
-      const fileInput = document.getElementById('minutePdf');
-      const file = fileInput.files[0];
-
-      if (!file) {
-        setError('Please select a PDF file');
-        return;
-      }
-
-      if (file.type !== 'application/pdf') {
-        setError('Only PDF files are allowed');
-        return;
-      }
-
-      setUploading(true);
-
-      const formDataObj = new FormData();
-      formDataObj.append('minuteTitle', `Minutes - ${new Date().toLocaleDateString()}`);
-      formDataObj.append('minuteFile', file);
-
-      const response = await axios.post('http://localhost:8000/api/sena/minutes/', formDataObj, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      // Add the new minute to uploaded list
-      setUploadedMinutes([...uploadedMinutes, response.data]);
-
-      // Refresh the minutes list to show the newly created minute
-      await fetchMinutes();
-
-      // Auto-select the newly uploaded minute
-      setFormData((prev) => ({
-        ...prev,
-        minute: response.data.minute_id,
-      }));
-
-      // Reset file input
-      fileInput.value = '';
-
-      setSuccess('PDF uploaded successfully! Minute linked to this record.');
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err) {
-      console.error('Error uploading PDF:', err);
-      setError('Failed to upload PDF: ' + (err.response?.data?.detail || err.message));
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -436,7 +343,6 @@ const SenaRecordForm = () => {
         clientPWD: formData.clientPWD,
         clientEmailsInput: validClientEmails,
         respondentEmailsInput: validRespondentEmails,
-        minute: formData.minute ? parseInt(formData.minute, 10) : null,
         appointmentsInput: validAppointments,
         clientStatus: formData.clientStatus,
         respondentStatus: formData.respondentStatus,
